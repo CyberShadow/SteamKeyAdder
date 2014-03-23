@@ -30,14 +30,15 @@ void click(HWND hwnd, uint x, uint y)
 string tryGetClipboardText()
 {
 	try
-		return getClipboardText();
+		return getClipboardText().strip();
 	catch
 		return null;
 }
 
 void main()
 {
-	string last = null;
+	string last = tryGetClipboardText();
+	writeln("Make sure the Steam window is visible and unobscured.");
 	writeln("Copy a key to the clipboard to add it to Steam.");
 	while (true)
 	{
@@ -102,6 +103,7 @@ void addKey()
 		if (IsWindowVisible(h) && h !in oldWindows && h.getWindowText() == "Product Activation" && h.getClassName().startsWith("USurface_"))
 			dialog = h;
 	enforce(dialog, "Can't find dialog");
+	forceSetForegroundWindow(dialog);
 
 	Sleep(100);
 	pressOn(dialog, 13);
@@ -137,4 +139,29 @@ void addKey()
 	pressOn(dialog, 13);
 	Sleep(100);
 	pressOn(dialog, VK_ESCAPE);
+}
+
+void forceSetForegroundWindow(HWND hWnd)
+{
+	if(!IsWindow(hWnd)) return;
+
+	BYTE keyState[256];
+	//to unlock SetForegroundWindow we need to imitate Alt pressing
+	if (GetKeyboardState(keyState.ptr))
+	{
+		if (!(keyState[VK_MENU] & 0x80))
+		{
+			keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+		}
+	}
+
+	SetForegroundWindow(hWnd);
+
+	if (GetKeyboardState(keyState.ptr))
+	{
+		if (!(keyState[VK_MENU] & 0x80))
+		{
+			keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+		}
+	}
 }
