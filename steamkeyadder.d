@@ -92,7 +92,7 @@ void addKey()
 
 	HWND menu;
 	foreach (h; windowIterator(null, null))
-		if (IsWindowVisible(h) && h !in oldWindows && h.getClassName().startsWith("USurfaceShadowed_"))
+		if (IsWindowVisible(h) && h !in oldWindows && h.getClassName().startsWith("USurface_"))
 			menu = h;
 	enforce(menu, "Can't find menu");
 
