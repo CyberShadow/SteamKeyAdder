@@ -145,7 +145,7 @@ void forceSetForegroundWindow(HWND hWnd)
 {
 	if(!IsWindow(hWnd)) return;
 
-	BYTE keyState[256];
+	BYTE[256] keyState;
 	//to unlock SetForegroundWindow we need to imitate Alt pressing
 	if (GetKeyboardState(keyState.ptr))
 	{
